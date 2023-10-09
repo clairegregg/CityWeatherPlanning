@@ -18,23 +18,24 @@
     <!-- development version, includes helpful console warnings -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <div id="app">
-        <h1>Welcome to the Random Number Generator</h1>
-        Please enter a minimum and a maximum as the range of the Random Number
-        <br>
-        Minimum: <input v-model="randMin"> <input v-model="randMax"> <br><br>
-        <button v-on:click="GetRand">Generate Random Number</button>
-        between {{randMin}} and {{randMax}}
-        <br> Latest Random Number is {{random}}
-        <span v-if="history.length>0">
-            <hr>
-            <h1>History of Numbers generated</h1>
-            <ul>
-                <li v-for="num in history">{{num}}</li>
-            </ul>
-        </span>
+        <h1>Weather Planner</h1>
+        <p>This website is to help you plan what to pack on your upcoming trip.</p>
+        <input v-model="city" placeholder="Dublin"></input>
+        <p>You are visiting {{ city }}</p>
+        <button v-on:click="SearchCity">Search for {{ city }}</button>
+        <ul>
+            <li v-for="(weather, index) in summary" :key="index">
+                <p>Day: {{ weather.date }}</p>
+                <p>Temperature: {{ weather.temperature }}°C</p>
+                <p>Rainfall: {{ weather.rainfall }} mm</p>
+                <p>Wind Speed: {{ weather.windspeed }} m/s</p>
+                <p>{{ weather.getTemperature() }} weather</p>
+                <p v-if="weather.getUmbrella()">Need an umbrella</p>
+                <p v-else>No Rain</p>
+            </li>
+        </ul>
     </div>
-    <script src="client.js" defer async>
-    </script>
+    <script type="module" src="client.js" defer async></script>
 </body>
 
 </html>
