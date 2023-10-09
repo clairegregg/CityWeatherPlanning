@@ -1,21 +1,32 @@
+import {Weather} from "./weather.js"
+
 var app = new Vue({
     el: '#app',
     data: {
-        randMin: 1,
-        randMax: 10,
-        random: -1,
-        history: []
+        city: "",
+        summary: [],
+        weather_details: []
     },
     methods: {
-        GetRand: getRandom
+        SearchCity: searchCity
     }
 })
-function getRandom() {
-    console.log("getRandom called")
-    let prom = fetch("random/" + this.randMin + "/" + this.randMax)
-    prom.then(response => response.json())
-        .then(response => {
-            this.random = response.result
-            this.history.push(response.result)
-        })
+
+const getNextDay = (daysToAdd) => {
+    const currentDate = new Date()
+    const nextDate = new Date(currentDate)
+    nextDate.setDate(currentDate.getDate() + daysToAdd)
+    return nextDate
+}
+
+function searchCity() {
+    var currentDate = new Date();
+    // For now, this is dummy data
+    this.summary = [
+            new Weather(currentDate, 50, 50, 50),
+            new Weather(getNextDay(1), 50, 50, 50),
+            new Weather(getNextDay(2), 50, 50, 50),
+            new Weather(getNextDay(3), 50, 50, 50),
+            new Weather(getNextDay(4), 50, 50, 50)
+        ]
 }
