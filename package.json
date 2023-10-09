@@ -1,0 +1,23 @@
+{
+  "name": "cityweather",
+  "version": "1.0.0",
+  "description": "Assignment for Internet Applications, a year 4 Computer Science module.",
+  "main": "api.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Claire Gregg",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express.js": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clairegregg/CityWeatherPlanning.git"
+  },
+  "bugs": {
+    "url": "https://github.com/clairegregg/CityWeatherPlanning/issues"
+  },
+  "homepage": "https://github.com/clairegregg/CityWeatherPlanning#readme"
+}
