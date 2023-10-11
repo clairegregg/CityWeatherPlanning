@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Assignment for Internet Applications, a year 4 Computer Science module.",
   "main": "api.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

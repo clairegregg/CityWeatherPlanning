@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <![endif]-->
 <html>
 
 <head>
@@ -22,20 +18,21 @@
         <p>This website is to help you plan what to pack on your upcoming trip.</p>
         <input v-model="city" placeholder="Dublin"></input>
         <p>You are visiting {{ city }}</p>
-        <button v-on:click="SearchCity">Search for {{ city }}</button>
+        <button v-on:click="searchCity">Search for {{ city }}</button>
         <ul>
             <li v-for="(weather, index) in summary" :key="index">
                 <p>Day: {{ weather.date }}</p>
                 <p>Temperature: {{ weather.temperature }}°C</p>
                 <p>Rainfall: {{ weather.rainfall }} mm</p>
                 <p>Wind Speed: {{ weather.windspeed }} m/s</p>
-                <p>{{ weather.getTemperature() }} weather</p>
-                <p v-if="weather.getUmbrella()">Need an umbrella</p>
+                <p>{{ weather.temperatureRange }} weather</p>
+                <p v-if="weather.needUmbrella">Need an umbrella</p>
                 <p v-else>No Rain</p>
             </li>
         </ul>
     </div>
     <script type="module" src="client.js" defer async></script>
+    <script type="module" src="weather.js"></script>
 </body>
 
 </html>

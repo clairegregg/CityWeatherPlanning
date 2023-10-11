@@ -1,32 +1,31 @@
-export class Weather {
+ export class Weather {
     date;
     temperature; 
     windspeed; 
     rainfall;
+    temperatureRange;
+    needUmbrella;
 
     constructor(date,temperature,windspeed, rainfall){
         this.date = date;
         this.temperature = temperature;
         this.windspeed = windspeed;
         this.rainfall = rainfall;
-    }    
 
-    getTemperature() {
         if (this.temperature < 13){
-            return Temperatures.Cold;
+            this.temperatureRange = Temperatures.Cold
         } else if (this.temperature > 23) {
-            return Temperatures.Hot;
+            this.temperatureRange = Temperatures.Hot
         } else {
-            return Temperatures.Mild;
+            this.temperatureRange = Temperatures.Mild
         }
-    }
-
-    getUmbrella() {
+        
         if (this.rainfall > 0) {
-            return true;
+            this.needUmbrella = true
+        } else {
+            this.needUmbrella = false
         }
-        return false;
-    }
+    }    
 }
 
 export const Temperatures = {
