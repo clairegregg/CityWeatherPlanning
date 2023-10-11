@@ -27,7 +27,8 @@ function searchCity() {
 function searchLatLon() {
     console.log("searchLatLon called")
     let prom = fetch("weather/coords/" + this.lat + "/" + this.lon)
-    prom.then(response => {
+    prom.then(response => response.json())
+        .then(response => {
         this.summary = response.result
     })
 }
