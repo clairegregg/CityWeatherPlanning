@@ -4,10 +4,13 @@ var app = new Vue({
     el: '#app',
     data: {
         city: "",
+        lat: "",
+        lon: "",
         summary: []
     },
     methods: {
-        searchCity: searchCity
+        searchCity: searchCity,
+        searchLatLon: searchLatLon,
     }
 })
 
@@ -19,4 +22,12 @@ function searchCity() {
         .then(response => {
             this.summary = response.result
         })
+}
+
+function searchLatLon() {
+    console.log("searchLatLon called")
+    let prom = fetch("weather/coords/" + this.lat + "/" + this.lon)
+    prom.then(response => {
+        this.summary = response.result
+    })
 }
