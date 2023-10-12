@@ -1,27 +1,27 @@
 import {Weather} from './weather.js'
-
 var app = new Vue({
     el: '#app',
     data: {
-        city: "",
+        cityQuery: "",
         lat: "",
         lon: "",
+        city: "",
+        cityPredictions: [],
         summary: []
     },
     methods: {
         searchCity: searchCity,
         searchLatLon: searchLatLon,
+        setCity: setCity
     }
 })
 
-function searchCity() {
-    console.log("searchCity called")
-    console.log("sending to weather/" + this.city)
-    let prom = fetch("weather/" + this.city)
+async function searchCity() {
+    let prom = fetch("city/" + this.cityQuery)
     prom.then(response => response.json())
         .then(response => {
-            this.summary = response.result
-        })
+        this.cityPredictions = response.predictions
+    })
 }
 
 function searchLatLon() {
@@ -31,4 +31,8 @@ function searchLatLon() {
         .then(response => {
         this.summary = response.result
     })
+}
+
+function setCity(prediction) {
+    this.city = prediction.description
 }
