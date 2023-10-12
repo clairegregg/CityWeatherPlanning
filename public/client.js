@@ -7,12 +7,14 @@ var app = new Vue({
         lon: "",
         city: "",
         cityPredictions: [],
+        currentCityId: "",
         summary: []
     },
     methods: {
         searchCity: searchCity,
         searchLatLon: searchLatLon,
-        setCity: setCity
+        setCity: setCity,
+        searchCityId: searchCityId
     }
 })
 
@@ -35,4 +37,14 @@ function searchLatLon() {
 
 function setCity(prediction) {
     this.city = prediction.description
+    this.currentCityId = prediction.place_id
+    this.searchCityId()
+}
+
+async function searchCityId() {
+    let prom = fetch("weather/gid/" + this.currentCityId)
+    prom.then(response => response.json())
+        .then(response => {
+        this.summary = response.result
+    })
 }

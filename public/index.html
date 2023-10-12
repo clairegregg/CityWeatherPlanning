@@ -27,7 +27,7 @@
         </div>
         <input v-model="lat"></input>
         <input v-model="lon"></input>
-        <button v-on:click="searchCity">Search for {{ city }}</button>
+        <button v-on:click="searchCityId">Search for {{ city }}</button>
         <button v-on:click="searchLatLon">Search for {{ lat }}, {{ lon }}</button>
         <ul>
             <li v-for="(weather, index) in summary" :key="index">

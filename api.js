@@ -23,13 +23,28 @@ async function sendCityPredictions(req, res) {
 };
 
 async function sendWeather(req, res) {
+    console.log('Got request with Google place ID')
+    let placeId = req.params.placeId
+    let prom = await fetch("https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=" + process.env.GOOGLE_API_KEY)
+    let data = await prom.json()
+    let lat = data.result.geometry.location.lat
+    let lon = data.result.geometry.location.lat
+    let result = await getWeather(lat, lon)
+    res.json({ result: result })
+}
+
+async function sendWeatherLatLon(req, res) {
     console.log('Got request with lat/lon')
     let lat = parseFloat(req.params.lat)
     let lon = parseFloat(req.params.lon)
+    let result = getWeather(lat, lon)
+    res.json({ result: result})
+}
+
+async function getWeather(lat, lon) {
     let prom = await fetch("https://api.openweathermap.org/data/2.5/forecast?units=metric&lat=" + lat + "&lon=" + lon + "&appid=" + process.env.OPEN_WEATHER_API_KEY)
     let data = await prom.json()
-    let result = jsonToWeather(data)
-    res.json({ result: result})
+    return jsonToWeather(data)
 }
 
 function jsonToWeather(json) {
@@ -72,8 +87,9 @@ function jsonToWeather(json) {
     return weathers
 }
 
+app.get('/weather/gid/:placeId', sendWeather)
 app.get('/city/:query', sendCityPredictions);
-app.get('/weather/coords/:lat/:lon', sendWeather)
+app.get('/weather/coords/:lat/:lon', sendWeatherLatLon)
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 
