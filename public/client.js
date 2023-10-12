@@ -1,34 +1,44 @@
-import {Weather} from './weather.js'
-
+import { Weather } from "./weather.js";
 var app = new Vue({
-    el: '#app',
-    data: {
-        city: "",
-        lat: "",
-        lon: "",
-        summary: []
-    },
-    methods: {
-        searchCity: searchCity,
-        searchLatLon: searchLatLon,
-    }
-})
+  el: "#app",
+  data: {
+    cityQuery: "",
+    city: "",
+    cityPredictions: [],
+    currentCityId: "",
+    summary: [],
+  },
+  methods: {
+    searchCity: searchCity,
+    setCity: setCity,
+    searchCityId: searchCityId,
+  },
+});
 
-function searchCity() {
-    console.log("searchCity called")
-    console.log("sending to weather/" + this.city)
-    let prom = fetch("weather/" + this.city)
-    prom.then(response => response.json())
-        .then(response => {
-            this.summary = response.result
-        })
+async function searchCity() {
+  if (this.cityQuery.length > 0) {
+    let prom = fetch("city/" + this.cityQuery);
+    prom
+      .then((response) => response.json())
+      .then((response) => {
+        this.cityPredictions = response.predictions;
+      });
+  }
 }
 
-function searchLatLon() {
-    console.log("searchLatLon called")
-    let prom = fetch("weather/coords/" + this.lat + "/" + this.lon)
-    prom.then(response => response.json())
-        .then(response => {
-        this.summary = response.result
-    })
+function setCity(prediction) {
+  this.city = prediction.description;
+  this.currentCityId = prediction.place_id;
+  this.searchCityId();
+  this.cityPredictions = [];
+  this.cityQuery = prediction.description;
+}
+
+async function searchCityId() {
+  let prom = fetch("weather/gid/" + this.currentCityId);
+  prom
+    .then((response) => response.json())
+    .then((response) => {
+      this.summary = response.result;
+    });
 }

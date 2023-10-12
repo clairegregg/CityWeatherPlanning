@@ -15,35 +15,36 @@ const publicPath = path.resolve(__dirname, 'public');
 
 app.use(express.static(publicPath));
 
-const getNextDay = (daysToAdd) => {
-    const currentDate = new Date();
-    const nextDate = new Date(currentDate);
-    nextDate.setDate(currentDate.getDate() + daysToAdd);
-    return nextDate;
-};
-
-const sendWeatherCity = (_, res) => {
-    console.log('Got request!');
-    const currentDate = new Date();
-    // For now, this is dummy data
-    const summary = [
-        new Weather(currentDate, 50, 50, 50),
-        new Weather(getNextDay(1), 50, 50, 50),
-        new Weather(getNextDay(2), 50, 50, 50),
-        new Weather(getNextDay(3), 50, 50, 50),
-        new Weather(getNextDay(4), 50, 50, 50),
-    ];
-    res.json({ result: summary });
+async function sendCityPredictions(req, res) {
+    let query = req.params.query
+    let prom = await fetch("https://maps.googleapis.com/maps/api/place/autocomplete/json?input="+query+"&key="+process.env.GOOGLE_API_KEY)
+    let data = await prom.json()
+    res.json({ predictions: data.predictions })
 };
 
 async function sendWeather(req, res) {
+    console.log('Got request with Google place ID')
+    let placeId = req.params.placeId
+    let prom = await fetch("https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=" + process.env.GOOGLE_API_KEY)
+    let data = await prom.json()
+    let lat = data.result.geometry.location.lat
+    let lon = data.result.geometry.location.lat
+    let result = await getWeather(lat, lon)
+    res.json({ result: result })
+}
+
+async function sendWeatherLatLon(req, res) {
     console.log('Got request with lat/lon')
     let lat = parseFloat(req.params.lat)
     let lon = parseFloat(req.params.lon)
+    let result = getWeather(lat, lon)
+    res.json({ result: result})
+}
+
+async function getWeather(lat, lon) {
     let prom = await fetch("https://api.openweathermap.org/data/2.5/forecast?units=metric&lat=" + lat + "&lon=" + lon + "&appid=" + process.env.OPEN_WEATHER_API_KEY)
     let data = await prom.json()
-    let result = jsonToWeather(data)
-    res.json({ result: result})
+    return jsonToWeather(data)
 }
 
 function jsonToWeather(json) {
@@ -86,8 +87,9 @@ function jsonToWeather(json) {
     return weathers
 }
 
-app.get('/weather/:city', sendWeatherCity);
-app.get('/weather/coords/:lat/:lon', sendWeather)
+app.get('/weather/gid/:placeId', sendWeather)
+app.get('/city/:query', sendCityPredictions);
+app.get('/weather/coords/:lat/:lon', sendWeatherLatLon)
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 
