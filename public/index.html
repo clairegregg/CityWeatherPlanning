@@ -17,18 +17,13 @@
         <h1>Weather Planner</h1>
         <p>This website is to help you plan what to pack on your upcoming trip.</p>
         <div>
-            <input v-model="cityQuery" placeholder="Search for a city" @input="searchCity"></input>
+            <input v-model="cityQuery" placeholder="Search for a city" @input="searchCity" @focus="searchCity"></input>
             <ul v-if="cityPredictions.length > 0">
                 <li v-for="(cityPrediction, index) in cityPredictions" :key="index">
                     <button v-on:click="setCity(cityPrediction)">{{ cityPrediction.description }}</button>
                 </li>
             </ul>
-            <p>You are visiting {{ city }}</p>
         </div>
-        <input v-model="lat"></input>
-        <input v-model="lon"></input>
-        <button v-on:click="searchCityId">Search for {{ city }}</button>
-        <button v-on:click="searchLatLon">Search for {{ lat }}, {{ lon }}</button>
         <ul>
             <li v-for="(weather, index) in summary" :key="index">
                 <p>Day: {{ weather.date }}</p>

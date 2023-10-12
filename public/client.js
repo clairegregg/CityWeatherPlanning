@@ -1,50 +1,44 @@
-import {Weather} from './weather.js'
+import { Weather } from "./weather.js";
 var app = new Vue({
-    el: '#app',
-    data: {
-        cityQuery: "",
-        lat: "",
-        lon: "",
-        city: "",
-        cityPredictions: [],
-        currentCityId: "",
-        summary: []
-    },
-    methods: {
-        searchCity: searchCity,
-        searchLatLon: searchLatLon,
-        setCity: setCity,
-        searchCityId: searchCityId
-    }
-})
+  el: "#app",
+  data: {
+    cityQuery: "",
+    city: "",
+    cityPredictions: [],
+    currentCityId: "",
+    summary: [],
+  },
+  methods: {
+    searchCity: searchCity,
+    setCity: setCity,
+    searchCityId: searchCityId,
+  },
+});
 
 async function searchCity() {
-    let prom = fetch("city/" + this.cityQuery)
-    prom.then(response => response.json())
-        .then(response => {
-        this.cityPredictions = response.predictions
-    })
-}
-
-function searchLatLon() {
-    console.log("searchLatLon called")
-    let prom = fetch("weather/coords/" + this.lat + "/" + this.lon)
-    prom.then(response => response.json())
-        .then(response => {
-        this.summary = response.result
-    })
+  if (this.cityQuery.length > 0) {
+    let prom = fetch("city/" + this.cityQuery);
+    prom
+      .then((response) => response.json())
+      .then((response) => {
+        this.cityPredictions = response.predictions;
+      });
+  }
 }
 
 function setCity(prediction) {
-    this.city = prediction.description
-    this.currentCityId = prediction.place_id
-    this.searchCityId()
+  this.city = prediction.description;
+  this.currentCityId = prediction.place_id;
+  this.searchCityId();
+  this.cityPredictions = [];
+  this.cityQuery = prediction.description;
 }
 
 async function searchCityId() {
-    let prom = fetch("weather/gid/" + this.currentCityId)
-    prom.then(response => response.json())
-        .then(response => {
-        this.summary = response.result
-    })
+  let prom = fetch("weather/gid/" + this.currentCityId);
+  prom
+    .then((response) => response.json())
+    .then((response) => {
+      this.summary = response.result;
+    });
 }
