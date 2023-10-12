@@ -42,13 +42,33 @@ async function sendWeatherLatLon(req, res) {
 }
 
 async function getWeather(lat, lon) {
-    let prom = await fetch("https://api.openweathermap.org/data/2.5/forecast?units=metric&lat=" + lat + "&lon=" + lon + "&appid=" + process.env.OPEN_WEATHER_API_KEY)
-    let data = await prom.json()
-    return jsonToWeather(data)
+    let weatherProm = await fetch("https://api.openweathermap.org/data/2.5/forecast?units=metric&lat=" + lat + "&lon=" + lon + "&appid=" + process.env.OPEN_WEATHER_API_KEY)
+    let weatherData = await weatherProm.json()
+
+    let pollutionProm = await fetch("https://air-quality-api.open-meteo.com/v1/air-quality?latitude="+ lat + "&longitude="+ lon +"&hourly=pm2_5")
+    let pollutionData = await pollutionProm.json()
+    
+    return jsonsToWeather(weatherData, pollutionData)
 }
 
-function jsonToWeather(json) {
-    let weatherList = json.list
+function jsonsToWeather(weatherJson, airQualityJson) {
+    let weatherList = weatherJson.list
+    let airQualityList = airQualityJson.hourly
+
+    // Get the air qualities into an object, accessed by date.
+    let daysAirQuality = {}
+    for (let i = 0; i < airQualityList.time.length; i++) {
+        let time = airQualityList.time[i]
+        let pollution = airQualityList["pm2_5"][i]
+        let date = time.slice(0,10)
+        if (date in daysAirQuality) {
+            daysAirQuality[date].push(pollution)
+            
+        } else {
+            daysAirQuality[date] = Array.of(pollution)
+        }
+    }
+
 
     // Seperate weather elements into days
     let daysWeather = {}
@@ -63,12 +83,18 @@ function jsonToWeather(json) {
     }
 
     let weathers = []
-    // For each day, get the average temperature, wind speed, and rainfall
+    let currDay = 1;
+    // For each day, get the average temperature, wind speed, rainfall, and max pollution
     // Then, add these to the list of Weather objects
     for (let date in daysWeather) {
+        // Sometimes, the API may return more than 5 days data
+        if (currDay > 5) {
+            break;
+        }
         let tempSum = 0
         let windSum = 0
         let rainSum = 0
+        let maxPm2p5 = 0
 
         for (let weather of daysWeather[date]) {
             tempSum += parseFloat(weather.main.temp)
@@ -78,11 +104,18 @@ function jsonToWeather(json) {
             }
         }
 
+        for (let pm2p5 of daysAirQuality[date]) {
+            if (maxPm2p5 < pm2p5) {
+                maxPm2p5 = pm2p5
+            }
+        }
+
         let avgTemp = tempSum / daysWeather[date].length
         let avgWind = windSum / daysWeather[date].length
 
-        let weather = new Weather(date, avgTemp, avgWind, rainSum)
+        let weather = new Weather(date, avgTemp, avgWind, rainSum, maxPm2p5)
         weathers.push(weather)
+        currDay++;
     }
     return weathers
 }

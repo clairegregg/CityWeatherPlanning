@@ -3,14 +3,17 @@
     temperature; 
     windspeed; 
     rainfall;
+    maxPm2p5;
     temperatureRange;
     needUmbrella;
+    needMask;
 
-    constructor(date,temperature,windspeed, rainfall){
+    constructor(date,temperature,windspeed, rainfall, maxPm2p5){
         this.date = date;
         this.temperature = temperature;
         this.windspeed = windspeed;
         this.rainfall = rainfall;
+        this.maxPm2p5 = maxPm2p5;
 
         if (this.temperature < 13){
             this.temperatureRange = Temperatures.Cold
@@ -24,6 +27,12 @@
             this.needUmbrella = true
         } else {
             this.needUmbrella = false
+        }
+
+        if (this.maxPm2p5 > 10) {
+            this.needMask = true
+        } else {
+            this.needMask = false
         }
     }    
 }
