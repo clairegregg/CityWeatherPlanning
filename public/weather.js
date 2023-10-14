@@ -15,13 +15,7 @@
         this.rainfall = rainfall;
         this.maxPm2p5 = maxPm2p5;
 
-        if (this.temperature < 13){
-            this.temperatureRange = Temperatures.Cold
-        } else if (this.temperature > 23) {
-            this.temperatureRange = Temperatures.Hot
-        } else {
-            this.temperatureRange = Temperatures.Mild
-        }
+        this.temperatureRange = getTemperatureType(this.temperature)
         
         if (this.rainfall > 0) {
             this.needUmbrella = true
@@ -35,6 +29,16 @@
             this.needMask = false
         }
     }    
+}
+
+export function getTemperatureType(temperature) {
+    if (temperature < 13){
+       return Temperatures.Cold
+    } else if (this.temperature > 23) {
+        return Temperatures.Hot
+    } else {
+        return Temperatures.Mild
+    }
 }
 
 export const Temperatures = {

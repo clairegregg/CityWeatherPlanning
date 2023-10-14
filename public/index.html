@@ -28,6 +28,14 @@
                 </li>
             </ul>
         </div>
+        <div v-if="summary.length > 0">
+            <h3 class="section-header"> Overview </h3>
+            <p v-if="bringUmbrella">Make sure to pack an umbrella.</p>
+            <p v-else>No need to bring an umbrella!</p>
+            <p>Weather will be overall {{ overallWeather }}.</p>
+            <p v-if="bringMask">A mask is recommended at some point in the next 5 days.</p>
+            <p v-else>A mask is not required for pollution reasons.</p>
+        </div>
         <h3 v-if="summary.length > 0" class="section-header"> The forecasted weather in <span class="location-text">{{ city }}</span> over the next 5 days </h3>
         <ul class="weather-list">
             <li v-for="(weather, index) in summary" :key="index" class="weather-details">
