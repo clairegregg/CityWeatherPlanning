@@ -1,4 +1,4 @@
-import { Weather } from "./weather.js";
+import { getTemperatureType } from "./weather.js";
 var app = new Vue({
   el: "#app",
   data: {
@@ -7,6 +7,9 @@ var app = new Vue({
     cityPredictions: [],
     currentCityId: "",
     summary: [],
+    bringUmbrella: false,
+    overallWeather: null,
+    bringMask: false,
   },
   methods: {
     searchCity: searchCity,
@@ -40,5 +43,20 @@ async function searchCityId() {
     .then((response) => response.json())
     .then((response) => {
       this.summary = response.result;
+      this.bringUmbrella = false;
+      this.bringMask = false;
+      let averageTemp = 0;
+      for (let weather of this.summary) {
+        console.log(weather)
+        if (weather.needUmbrella) {
+          this.bringUmbrella = true;
+        }
+        if (weather.needMask) {
+          this.bringMask = true;
+        }
+        averageTemp += weather.temperature;
+      }
+      averageTemp /= 5
+      this.overallWeather = getTemperatureType(averageTemp)
     });
 }

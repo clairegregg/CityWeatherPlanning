@@ -7,35 +7,47 @@
     <title></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="client.css">
 </head>
 
 <body>
     <!-- development version, includes helpful console warnings -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <div id="app">
-        <h1>Weather Planner</h1>
-        <p>This website is to help you plan what to pack on your upcoming trip.</p>
+        <h1><span class="title">Weather</span> Planner</h1>
+        <p> This website will help you pack for your upcoming trip! </p>
+        <h3 class="section-header"> Choose where you're visiting</h2>
         <div>
-            <input v-model="cityQuery" placeholder="Search for a city" @input="searchCity" @focus="searchCity"></input>
+            <div  class="search-box">
+                <input v-model="cityQuery" placeholder="Search for a city" @input="searchCity" @focus="searchCity" class="search-input"></input>
+            </div>
+            <br>
             <ul v-if="cityPredictions.length > 0">
-                <li v-for="(cityPrediction, index) in cityPredictions" :key="index">
-                    <button v-on:click="setCity(cityPrediction)">{{ cityPrediction.description }}</button>
+                <li v-for="(cityPrediction, index) in cityPredictions" :key="index" class="location-container">
+                    <button class="location-button" v-on:click="setCity(cityPrediction)">{{ cityPrediction.description }}</button>
                 </li>
             </ul>
         </div>
-        <ul>
-            <li v-for="(weather, index) in summary" :key="index">
-                <p>Day: {{ weather.date }}</p>
-                <p>Temperature: {{ weather.temperature }}°C</p>
-                <p>Rainfall: {{ weather.rainfall }} mm</p>
-                <p>Wind Speed: {{ weather.windspeed }} m/s</p>
-                <p>{{ weather.temperatureRange }} weather</p>
-                <p>{{ weather.maxPm2p5 }} &mu;g/m&sup3; - max particulate matter with diameter smaller than 2.5 &mu;m over the day</p>
-                <p v-if="weather.needUmbrella">Need an umbrella</p>
-                <p v-else>No Rain</p>
-                <p v-if="weather.needMask">Need a mask</p>
-                <p v-else>No need for a mask</p>
+        <div v-if="summary.length > 0">
+            <h3 class="section-header"> Overview </h3>
+            <p v-if="bringUmbrella">Make sure to pack an umbrella.</p>
+            <p v-else>No need to bring an umbrella!</p>
+            <p>Weather will be overall {{ overallWeather }}.</p>
+            <p v-if="bringMask">A mask is recommended at some point in the next 5 days.</p>
+            <p v-else>A mask is not required for pollution reasons.</p>
+        </div>
+        <h3 v-if="summary.length > 0" class="section-header"> The forecasted weather in <span class="location-text">{{ city }}</span> over the next 5 days </h3>
+        <ul class="weather-list">
+            <li v-for="(weather, index) in summary" :key="index" class="weather-details">
+                <h5 class="date-text"><b> {{ weather.date }} <span v-if="index==0"> (Today) </span></b></h5>
+                <p>Overall, {{ weather.temperatureRange }} weather.</p>
+                <p><b>Average temperature:</b> {{ weather.temperature.toFixed(1) }}°C</p>
+                <p><b>Total Rainfall:</b> {{ weather.rainfall.toFixed(1) }} mm</p>
+                <p><b>Average Wind Speed:</b> {{ weather.windspeed.toFixed(1) }} m/s</p>
+                <p>
+                    <b>Max PM2.5 (<a href="https://www.epa.gov/pm-pollution/particulate-matter-pm-basics">ref</a>):</b>  {{ weather.maxPm2p5.toFixed(1) }}&mu;g/m&sup3;, 
+                    <span v-if="weather.needMask"> face mask recommended</span><span v-else> no face mask required</span>.
+                </p>
             </li>
         </ul>
     </div>
