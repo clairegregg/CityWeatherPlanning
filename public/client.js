@@ -15,6 +15,7 @@ var app = new Vue({
     searchCity: searchCity,
     setCity: setCity,
     searchCityId: searchCityId,
+    clearSearch: clearSearch,
   },
 });
 
@@ -27,6 +28,12 @@ async function searchCity() {
         this.cityPredictions = response.predictions;
       });
   }
+}
+
+function clearSearch() {
+  this.cityQuery = ""
+  this.city = ""
+  this.predictions = []
 }
 
 function setCity(prediction) {
@@ -47,7 +54,6 @@ async function searchCityId() {
       this.bringMask = false;
       let averageTemp = 0;
       for (let weather of this.summary) {
-        console.log(weather)
         if (weather.needUmbrella) {
           this.bringUmbrella = true;
         }

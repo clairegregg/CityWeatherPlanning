@@ -17,7 +17,7 @@ app.use(express.static(publicPath));
 
 async function sendCityPredictions(req, res) {
     let query = req.params.query
-    let prom = await fetch("https://maps.googleapis.com/maps/api/place/autocomplete/json?input="+query+"&key="+process.env.GOOGLE_API_KEY)
+    let prom = await fetch("https://maps.googleapis.com/maps/api/place/autocomplete/json?input="+query+"&key="+process.env.GOOGLE_API_KEY+"&types=(cities)")
     let data = await prom.json()
     res.json({ predictions: data.predictions })
 };
