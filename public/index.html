@@ -19,7 +19,7 @@
         <h3 class="section-header"> Choose where you're visiting</h2>
         <div>
             <div  class="search-box">
-                <input v-model="cityQuery" placeholder="Search for a city" @input="searchCity" @focus="searchCity" class="search-input"></input>
+                <input v-model="cityQuery" placeholder="Search for a city" @input="searchCity" @focus="searchCity" @keydown.enter.prevent="setCity(cityPredictions[0])" class="search-input"></input>
                 <button @click="clearSearch" class="clear-button">x</button>
             </div>
             <br>
