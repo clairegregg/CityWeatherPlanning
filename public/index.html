@@ -7,17 +7,20 @@
     <title></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="client.css">
 </head>
 
 <body>
     <!-- development version, includes helpful console warnings -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <div id="app">
-        <h1>Weather Planner</h1>
-        <p>This website is to help you plan what to pack on your upcoming trip.</p>
+        <h1><span class="title">Weather</span> Planner</h1>
+        <p> This website will help you pack for your upcoming trip! </p>
+        <h3 class="section-header"> First, choose where you're visiting</h2>
         <div>
-            <input v-model="cityQuery" placeholder="Search for a city" @input="searchCity" @focus="searchCity"></input>
+            <div  class="search-box">
+                <input v-model="cityQuery" placeholder="Search for a city" @input="searchCity" @focus="searchCity" class="search-input"></input>
+            </div>
             <ul v-if="cityPredictions.length > 0">
                 <li v-for="(cityPrediction, index) in cityPredictions" :key="index">
                     <button v-on:click="setCity(cityPrediction)">{{ cityPrediction.description }}</button>
