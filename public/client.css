@@ -26,6 +26,7 @@
 
 /* Style for the search box container */
 .search-box {
+  position: relative;
   width: 300px;
   margin: 0 auto;
   padding: 10px;
@@ -46,6 +47,22 @@
   font-weight: inherit;
   color: inherit;
   font-size: inherit;
+  padding-right: 30px;
+}
+
+.clear-button {
+  position: absolute;
+  top: 50%; 
+  right: 10px; 
+  transform: translateY(-50%); 
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 150%;
+}
+
+.clear-button:hover {
+  color: var(--accent); /* Change button color on hover */
 }
 
 /* Remove bullets from all lists.*/

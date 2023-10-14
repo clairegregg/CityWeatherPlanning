@@ -34,7 +34,7 @@
 export function getTemperatureType(temperature) {
     if (temperature < 13){
        return Temperatures.Cold
-    } else if (this.temperature > 23) {
+    } else if (temperature > 23) {
         return Temperatures.Hot
     } else {
         return Temperatures.Mild

@@ -20,6 +20,7 @@
         <div>
             <div  class="search-box">
                 <input v-model="cityQuery" placeholder="Search for a city" @input="searchCity" @focus="searchCity" class="search-input"></input>
+                <button @click="clearSearch" class="clear-button">x</button>
             </div>
             <br>
             <ul v-if="cityPredictions.length > 0">
