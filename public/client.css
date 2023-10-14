@@ -42,6 +42,35 @@
   font-size: inherit;
 }
 
+/* Remove bullets from all lists.*/
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.location-container {
+  margin: 0 auto;
+  padding: 10px;
+  border-radius: 20px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.location-button {
+  border: none;
+  padding: 10px;
+  border-radius: 20px;
+  background-color: var(--secondary);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  outline: none;
+  font-family: inherit;
+  font-weight: inherit;
+  color: inherit;
+  font-size: inherit;
+}
+
 body {
   font-family: 'Prompt';
   font-weight: 400;

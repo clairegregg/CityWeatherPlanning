@@ -16,17 +16,19 @@
     <div id="app">
         <h1><span class="title">Weather</span> Planner</h1>
         <p> This website will help you pack for your upcoming trip! </p>
-        <h3 class="section-header"> First, choose where you're visiting</h2>
+        <h3 class="section-header"> Choose where you're visiting</h2>
         <div>
             <div  class="search-box">
                 <input v-model="cityQuery" placeholder="Search for a city" @input="searchCity" @focus="searchCity" class="search-input"></input>
             </div>
+            <br>
             <ul v-if="cityPredictions.length > 0">
-                <li v-for="(cityPrediction, index) in cityPredictions" :key="index">
-                    <button v-on:click="setCity(cityPrediction)">{{ cityPrediction.description }}</button>
+                <li v-for="(cityPrediction, index) in cityPredictions" :key="index" class="location-container">
+                    <button class="location-button" v-on:click="setCity(cityPrediction)">{{ cityPrediction.description }}</button>
                 </li>
             </ul>
         </div>
+        <h3 v-if="summary.length > 0" class="section-header"> The weather in {{ city }} over the next 5 days </h3>
         <ul>
             <li v-for="(weather, index) in summary" :key="index">
                 <p>Day: {{ weather.date }}</p>
