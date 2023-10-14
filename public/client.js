@@ -32,7 +32,6 @@ async function searchCity() {
 
 function clearSearch() {
   this.cityQuery = ""
-  this.city = ""
   this.predictions = []
 }
 
