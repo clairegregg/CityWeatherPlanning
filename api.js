@@ -31,8 +31,7 @@ async function sendWeather(req, res) {
     let lon = data.result.geometry.location.lng
     let weather = await getWeather(lat, lon)
     let birding = await getBirdingHotspot(lat, lon)
-    console.log(birding)
-    res.json({ result: weather, birdingHotspot: birding })
+    res.json({ weather: weather, birdingHotspot: birding })
 }
 
 async function getWeather(lat, lon) {

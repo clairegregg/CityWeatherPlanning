@@ -139,10 +139,18 @@ h2, h3, h4, h5 {
   text-align: center;
 }
 
-a:link { color: var(--background); }
+a:link { color: var(--primary); }
 a:visited { color: var(--secondary); }
 a:hover { color: var(--accent); }
 a:active { color: var(--accent); }
+
+.weather-link:link { color: var(--background); }
+
+.birding-div {
+  width: 60%;
+  margin: auto;
+  text-align: left;
+}
 
 html {font-size: 120%;} 
 

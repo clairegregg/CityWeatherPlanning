@@ -30,14 +30,23 @@
             </ul>
         </div>
         <div v-if="summary.length > 0">
-            <h3 class="section-header"> Overview </h3>
+            <h3 class="section-header"> Weather Overview </h3>
             <p v-if="bringUmbrella">Make sure to pack an umbrella.</p>
             <p v-else>No need to bring an umbrella!</p>
             <p>Weather will be overall {{ overallWeather }}.</p>
             <p v-if="bringMask">A mask is recommended at some point in the next 5 days.</p>
             <p v-else>A mask is not required for pollution reasons.</p>
         </div>
-        <h3 v-if="summary.length > 0" class="section-header"> The forecasted weather in <span class="location-text">{{ city }}</span> over the next 5 days </h3>
+        <div v-if="birdingHotspot != nil" class="birding-div">
+            <h3 class="section-header"> Birding Opportunities Nearby</h3>
+            <p>The closest birding hotspot to {{ city }} is <a href={{birdingHotspot.googleMapsLink}}>{{ birdingHotspot.name }}</a>. It's only {{ birdingHotspot.distance.toFixed(2) }}km from the centre of {{ city }}! Some recent sightings there include:</p>
+            <ul v-for="(bird,index) in birdingHotspot.sightings" :key="index">
+                <li>
+                    {{ bird.commonName }} (<i>{{ bird.scientificName }}</i>)
+                </li>
+            </ul>
+        </div>
+        <h3 v-if="summary.length > 0" class="section-header"> Detailed weather for <span class="location-text">{{ city }}</span> over the next 5 days </h3>
         <ul class="weather-list">
             <li v-for="(weather, index) in summary" :key="index" class="weather-details">
                 <h5 class="date-text"><b> {{ weather.date }} <span v-if="index==0"> (Today) </span></b></h5>
@@ -46,7 +55,7 @@
                 <p><b>Total Rainfall:</b> {{ weather.rainfall.toFixed(1) }} mm</p>
                 <p><b>Average Wind Speed:</b> {{ weather.windspeed.toFixed(1) }} m/s</p>
                 <p>
-                    <b>Max PM2.5 (<a href="https://www.epa.gov/pm-pollution/particulate-matter-pm-basics">ref</a>):</b>  {{ weather.maxPm2p5.toFixed(1) }}&mu;g/m&sup3;, 
+                    <b>Max PM2.5 (<a class="weather-link" href="https://www.epa.gov/pm-pollution/particulate-matter-pm-basics">ref</a>):</b>  {{ weather.maxPm2p5.toFixed(1) }}&mu;g/m&sup3;, 
                     <span v-if="weather.needMask"> face mask recommended</span><span v-else> no face mask required</span>.
                 </p>
             </li>

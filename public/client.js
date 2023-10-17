@@ -10,6 +10,7 @@ var app = new Vue({
     bringUmbrella: false,
     overallWeather: null,
     bringMask: false,
+    birdingHotspot: null,
   },
   methods: {
     searchCity: searchCity,
@@ -48,7 +49,7 @@ async function searchCityId() {
   prom
     .then((response) => response.json())
     .then((response) => {
-      this.summary = response.result;
+      this.summary = response.weather;
       this.bringUmbrella = false;
       this.bringMask = false;
       let averageTemp = 0;
@@ -63,5 +64,7 @@ async function searchCityId() {
       }
       averageTemp /= 5
       this.overallWeather = getTemperatureType(averageTemp)
+      this.birdingHotspot = response.birdingHotspot
+      console.log(this.birdingHotspot)
     });
 }

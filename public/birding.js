@@ -4,6 +4,7 @@ export class HotSpot {
     name;
     distance;
     sightings;
+    googleMapsLink;
 
     constructor(lat, lon, name, distance, sightings) {
         this.lat = lat
@@ -11,6 +12,7 @@ export class HotSpot {
         this.name = name
         this.distance = distance
         this.sightings = sightings
+        this.googleMapsLink = "https://maps.google.com/?q=" + lat + "," + lon
     }
 }
 
