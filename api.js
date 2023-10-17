@@ -133,20 +133,24 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
 }
 
 async function getBirdingHotspot(lat,lon) {
-    let prom = await fetch("https://api.ebird.org/v2/ref/hotspot/geo?lat="+lat+"&lng="+lon+"&fmt=json&dist=50")
-    let data = await prom.json()
+    try {
+        let prom = await fetch("https://api.ebird.org/v2/ref/hotspot/geo?lat="+lat+"&lng="+lon+"&fmt=json&dist=50")
+        let data = await prom.json()
 
-    let minDistance = getDistanceFromLatLonInKm(lat, lon, data[0].lat, data[0].lng)
-    let minIndex = 0
-    for (let i = 1; i < data.length; i++) {
-        let distance = getDistanceFromLatLonInKm(lat, lon, data[i].lat, data[i].lng)
-        if (distance < minDistance) {
-            minDistance = distance
-            minIndex = i
+        let minDistance = getDistanceFromLatLonInKm(lat, lon, data[0].lat, data[0].lng)
+        let minIndex = 0
+        for (let i = 1; i < data.length; i++) {
+            let distance = getDistanceFromLatLonInKm(lat, lon, data[i].lat, data[i].lng)
+            if (distance < minDistance) {
+                minDistance = distance
+                minIndex = i
+            }
         }
-    }
 
-    return jsonToBirding(data[minIndex], minDistance)
+        return jsonToBirding(data[minIndex], minDistance)
+    } catch (_) {
+        return { "error": "No birding spots within 50km." }
+    }
 }
 
 async function jsonToBirding(json, distance) {
@@ -156,7 +160,7 @@ async function jsonToBirding(json, distance) {
     let sightings = await prom.json()
 
     let mostRecentSightings = []
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < Math.min(5, sightings.length); i++) {
         let sighting = new BirdSighting(sightings[i].comName, sightings[i].sciName)
         mostRecentSightings.push(sighting)
     }

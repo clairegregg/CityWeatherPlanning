@@ -39,7 +39,7 @@
         </div>
         <div v-if="birdingHotspot != nil" class="birding-div">
             <h3 class="section-header"> Birding Opportunities Nearby</h3>
-            <p>The closest birding hotspot to {{ city }} is <a href={{birdingHotspot.googleMapsLink}}>{{ birdingHotspot.name }}</a>. It's only {{ birdingHotspot.distance.toFixed(2) }}km from the centre of {{ city }}! Some recent sightings there include:</p>
+            <p>The closest birding hotspot to {{ city }} is <a href={{birdingHotspot.googleMapsLink}}>{{ birdingHotspot.name }}</a>. It's only {{ birdingHotspot.distance.toFixed(2) }}km from the centre of {{ city }}! <span v-if="birdingHotspot.sightings.length > 0">Some recent sightings there include:</span></p>
             <ul v-for="(bird,index) in birdingHotspot.sightings" :key="index">
                 <li>
                     {{ bird.commonName }} (<i>{{ bird.scientificName }}</i>)

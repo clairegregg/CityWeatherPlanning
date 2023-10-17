@@ -64,7 +64,9 @@ async function searchCityId() {
       }
       averageTemp /= 5
       this.overallWeather = getTemperatureType(averageTemp)
-      this.birdingHotspot = response.birdingHotspot
+      if (!("error" in response.birdingHotspot)) {
+        this.birdingHotspot = response.birdingHotspot
+      } 
       console.log(this.birdingHotspot)
     });
 }
