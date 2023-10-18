@@ -6,7 +6,7 @@ export class HotSpot {
     sightings;
     googleMapsLink;
 
-    constructor(lat, lon, name, distance, sightings) {
+    constructor(lat, lon, name, distance, sightings, image) {
         this.lat = lat
         this.lon = lon
         this.name = name
@@ -19,9 +19,11 @@ export class HotSpot {
 export class BirdSighting {
     commonName;
     scientificName;
+    image;
 
-    constructor(commonName, scientificName) {
+    constructor(commonName, scientificName, image) {
         this.commonName = commonName
         this.scientificName = scientificName
+        this.image = image
     }
 }

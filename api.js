@@ -161,11 +161,30 @@ async function jsonToBirding(json, distance) {
 
     let mostRecentSightings = []
     for (let i = 0; i < Math.min(5, sightings.length); i++) {
-        let sighting = new BirdSighting(sightings[i].comName, sightings[i].sciName)
+        let image = await getBirdImage(sightings[i].sciName)
+        let sighting = new BirdSighting(sightings[i].comName, sightings[i].sciName, image)
         mostRecentSightings.push(sighting)
     }
 
     return new HotSpot(lat, lon, json.locName, distance, mostRecentSightings)
+}
+
+async function getBirdImage(scientificName) {
+    let name = scientificName.replace(" ", "_")
+    console.log("https://commons.wikimedia.org/w/api.php?action=query&prop=pageimages&titles=" + name + "&format=json")
+    let prom = await fetch("https://commons.wikimedia.org/w/api.php?action=query&prop=pageimages&titles=" + name + "&format=json")
+    let details = await prom.json()
+    let pageId = Object.keys(details.query.pages)[0]
+    if (pageId == -1){
+        return "./bird.png"
+    }
+
+    console.log(Object.values(details.query.pages)[0].thumbnail)
+    let thumbnailSrc = Object.values(details.query.pages)[0].thumbnail.source
+    let normalSrc = thumbnailSrc.replace("thumb/","")
+    let lastSection = normalSrc.lastIndexOf("/")
+    normalSrc = normalSrc.slice(0,lastSection)
+    return normalSrc
 }
 
 app.get('/weather/gid/:placeId', sendWeather)

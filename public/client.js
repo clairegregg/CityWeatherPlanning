@@ -34,6 +34,8 @@ async function searchCity() {
 function clearSearch() {
   this.cityQuery = ""
   this.predictions = []
+  this.summary = []
+  this.birdingHotspot = null
 }
 
 function setCity(prediction) {
