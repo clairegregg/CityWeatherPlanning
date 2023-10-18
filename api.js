@@ -156,7 +156,7 @@ async function getBirdingHotspot(lat,lon) {
 async function jsonToBirding(json, distance) {
     let lat = json.lat
     let lon = json.lng
-    let prom = await fetch("https://api.ebird.org/v2/data/obs/geo/recent?lat="+lat+ "&lng=" + lon + "&hotspot=true&dist=1&key=" + process.env.BIRDING_API_KEY)
+    let prom = await fetch("https://api.ebird.org/v2/data/obs/geo/recent?lat="+lat+ "&lng=" + lon + "&hotspot=true&dist=1&back=30&key=" + process.env.BIRDING_API_KEY)
     let sightings = await prom.json()
 
     let mostRecentSightings = []
@@ -171,15 +171,12 @@ async function jsonToBirding(json, distance) {
 
 async function getBirdImage(scientificName) {
     let name = scientificName.replace(" ", "_")
-    console.log("https://commons.wikimedia.org/w/api.php?action=query&prop=pageimages&titles=" + name + "&format=json")
     let prom = await fetch("https://commons.wikimedia.org/w/api.php?action=query&prop=pageimages&titles=" + name + "&format=json")
     let details = await prom.json()
     let pageId = Object.keys(details.query.pages)[0]
     if (pageId == -1){
         return "./bird.png"
     }
-
-    console.log(Object.values(details.query.pages)[0].thumbnail)
     let thumbnailSrc = Object.values(details.query.pages)[0].thumbnail.source
     let normalSrc = thumbnailSrc.replace("thumb/","")
     let lastSection = normalSrc.lastIndexOf("/")
