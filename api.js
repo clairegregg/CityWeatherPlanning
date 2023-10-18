@@ -1,8 +1,9 @@
-import express from 'express';
+import express, { json } from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { Weather } from './public/weather.js';
 import dotenv from 'dotenv';
+import { BirdSighting, HotSpot } from './public/birding.js';
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -23,22 +24,14 @@ async function sendCityPredictions(req, res) {
 };
 
 async function sendWeather(req, res) {
-    console.log('Got request with Google place ID')
     let placeId = req.params.placeId
     let prom = await fetch("https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=" + process.env.GOOGLE_API_KEY)
     let data = await prom.json()
     let lat = data.result.geometry.location.lat
-    let lon = data.result.geometry.location.lat
-    let result = await getWeather(lat, lon)
-    res.json({ result: result })
-}
-
-async function sendWeatherLatLon(req, res) {
-    console.log('Got request with lat/lon')
-    let lat = parseFloat(req.params.lat)
-    let lon = parseFloat(req.params.lon)
-    let result = getWeather(lat, lon)
-    res.json({ result: result})
+    let lon = data.result.geometry.location.lng
+    let weather = await getWeather(lat, lon)
+    let birding = await getBirdingHotspot(lat, lon)
+    res.json({ weather: weather, birdingHotspot: birding })
 }
 
 async function getWeather(lat, lon) {
@@ -120,9 +113,79 @@ function jsonsToWeather(weatherJson, airQualityJson) {
     return weathers
 }
 
+function deg2rad(deg) {
+    return deg * (Math.PI/180)
+}
+
+// From https://stackoverflow.com/questions/18883601/function-to-calculate-distance-between-two-coordinates#:~:text=exports%20%3D%20function%20convertDegreesToRadians(%7B%20degrees,PI%20%2F%20180%3B%20%7D%3B
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1); 
+    var a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+      ; 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c; // Distance in km
+    return d;
+}
+
+async function getBirdingHotspot(lat,lon) {
+    try {
+        let prom = await fetch("https://api.ebird.org/v2/ref/hotspot/geo?lat="+lat+"&lng="+lon+"&fmt=json&dist=50")
+        let data = await prom.json()
+
+        let minDistance = getDistanceFromLatLonInKm(lat, lon, data[0].lat, data[0].lng)
+        let minIndex = 0
+        for (let i = 1; i < data.length; i++) {
+            let distance = getDistanceFromLatLonInKm(lat, lon, data[i].lat, data[i].lng)
+            if (distance < minDistance) {
+                minDistance = distance
+                minIndex = i
+            }
+        }
+
+        return jsonToBirding(data[minIndex], minDistance)
+    } catch (_) {
+        return { "error": "No birding spots within 50km." }
+    }
+}
+
+async function jsonToBirding(json, distance) {
+    let lat = json.lat
+    let lon = json.lng
+    let prom = await fetch("https://api.ebird.org/v2/data/obs/geo/recent?lat="+lat+ "&lng=" + lon + "&hotspot=true&dist=1&back=30&key=" + process.env.BIRDING_API_KEY)
+    let sightings = await prom.json()
+
+    let mostRecentSightings = []
+    for (let i = 0; i < Math.min(5, sightings.length); i++) {
+        let image = await getBirdImage(sightings[i].sciName)
+        let sighting = new BirdSighting(sightings[i].comName, sightings[i].sciName, image)
+        mostRecentSightings.push(sighting)
+    }
+
+    return new HotSpot(lat, lon, json.locName, distance, mostRecentSightings)
+}
+
+async function getBirdImage(scientificName) {
+    let name = scientificName.replace(" ", "_")
+    let prom = await fetch("https://commons.wikimedia.org/w/api.php?action=query&prop=pageimages&titles=" + name + "&format=json")
+    let details = await prom.json()
+    let pageId = Object.keys(details.query.pages)[0]
+    if (pageId == -1){
+        return "./bird.png"
+    }
+    let thumbnailSrc = Object.values(details.query.pages)[0].thumbnail.source
+    let normalSrc = thumbnailSrc.replace("thumb/","")
+    let lastSection = normalSrc.lastIndexOf("/")
+    normalSrc = normalSrc.slice(0,lastSection)
+    return normalSrc
+}
+
 app.get('/weather/gid/:placeId', sendWeather)
-app.get('/city/:query', sendCityPredictions);
-app.get('/weather/coords/:lat/:lon', sendWeatherLatLon)
+app.get('/city/:query', sendCityPredictions)
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 
