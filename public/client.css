@@ -121,6 +121,7 @@ h5 {
   justify-content: center;
   align-items: center;
   height: max-content;
+  margin-bottom: 30px;
 }
 
 .weather-details {
@@ -206,12 +207,6 @@ a:active {
   object-position: center;
 }
 
-
-
-img {
-  
-}
-
 html {
   font-size: 120%;
 }
@@ -274,6 +269,7 @@ small {
   text-align: center;
   width: 100%;
   border-top: 1px solid var(--white);
+  background-color: var(--background);
 }
 
 .footer p{
