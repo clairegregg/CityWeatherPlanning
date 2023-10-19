@@ -225,7 +225,7 @@ async function getBirdImage(scientificName) {
 
 app.get('/weather/gid/:placeId', sendDetails)
 app.get('/city/:query', sendCityPredictions)
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => console.log(`Weather app listening on port ${port}!`));
 
 
 
